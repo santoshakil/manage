@@ -15,18 +15,17 @@ class ThemeProvider extends Notifier<ThemeProfile> {
   ThemeProfile build() => ref.watch(settingsProvider.select((v) => v.theme));
 
   ThemeProfile get theme => state;
-  _Data get _data => _Data(ref.read(settingsProvider), state);
 
   Future<void> changeTheme(ThemeProfile theme) async =>
-      await compute(_changeTheme, _data);
-
-  void _changeTheme(_Data data) {
-    openDBSync(data.dir);
-    data.setting.theme = data.theme;
-    db.writeTxnSync(() => db.appSettings.putSync(data.setting));
-  }
+      await compute(_changeTheme, _Data(ref.read(settingsProvider), theme));
 
   Future<void> toggleTheme() async => await changeTheme(state.toggled);
+}
+
+void _changeTheme(_Data data) {
+  openDBSync(data.dir);
+  data.setting.theme = data.theme;
+  db.writeTxnSync(() => db.appSettings.putSync(data.setting));
 }
 
 class _Data {

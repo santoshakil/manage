@@ -27,4 +27,9 @@ class AppDir {
   late Directory root;
   late Directory db;
   AppDir();
+
+  AppDir copy() => AppDir()
+    ..backup = backup
+    ..root = root
+    ..db = db;
 }
